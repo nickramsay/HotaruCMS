@@ -47,4 +47,3 @@
 
     When you're done, enable the DB_CACHE from the Admin -> Settings page
 </p>
-

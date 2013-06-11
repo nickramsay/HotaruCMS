@@ -60,6 +60,9 @@ class AdminPages
 			case "blocked":
 				$h->vars['admin_blocked_list'] = $this->blocked($h);
 				break;
+                        case "pages_management":
+                                $h->vars['admin_pages_array'] = $this->getPages($h);
+				break;
 			case "plugin_management":				
 				$h->vars['admin_sidebar_layout'] = 'horizontal';
 				$this->adminPlugins($h);
@@ -286,15 +289,15 @@ class AdminPages
 		if ($action == 'announcement') { $maintenance->addSiteAnnouncement($h); }
 		if ($action == 'open') { $h->openCloseSite('open'); }
 		if ($action == 'close') { $h->openCloseSite('close'); }
-		if ($action == 'clear_all_cache') { 
+		if ($action == 'clear_all_cache') {                         
 			$h->clearCache('db_cache', false);
 			$h->clearCache('css_js_cache', false);
 			$h->clearCache('rss_cache', false);
 			$h->clearCache('html_cache', false);
 			$h->clearCache('lang_cache', false);
 			@unlink(BASE. 'cache/smartloader_cache.php');
-			$h->message = $h->lang('admin_maintenance_clear_all_cache_success');
-			$h->messageType = 'green alert-success';
+                        $h->pluginHook('maintenance_clear_all_cache');
+			$h->messages[$h->lang('admin_maintenance_clear_all_cache_success')] = 'green';                         
 		}
 		if ($action == 'clear_db_cache') { $h->clearCache('db_cache'); }
 		if ($action == 'clear_css_js_cache') { $h->clearCache('css_js_cache'); }
@@ -405,6 +408,12 @@ class AdminPages
 		return $blocked_items;
 	}
 	
+        
+        public function getPages($h)
+        {
+            
+        }
+        
 	
 	/* *************************************************************
 	*
@@ -493,7 +502,7 @@ class AdminPages
         public static function sidebarPluginsList($h, $pluginResult)
         {           
             $pFuncs = new PluginFunctions();
-            $base = $pFuncs::getValues($h, $pluginResult);
+            $base = $pFuncs->getValues($h, $pluginResult);
 
             try {
                 if (is_array($base)) {

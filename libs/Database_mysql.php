@@ -24,7 +24,7 @@
  * @link      http://www.hotarucms.org/
  */
  
-class Database extends ezSQL_mysqli
+class Database extends ezSQL_mysql
 {
 	protected $select   = array();
 	protected $table         = '';

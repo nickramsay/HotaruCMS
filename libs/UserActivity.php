@@ -34,23 +34,23 @@ class UserActivity
 	 * @param string $type blank or "count" or "query"
 	 * @return array|false
 	 */
-	public function getLatestActivity($h, $limit = 0, $userid = 0, $type = '')
+	public function getLatestActivity($h, $limitCount = 0, $userid = 0, $type = '', $fromId = 0)
 	{
-		if (!$limit) { $limit = ""; } else { $limit = "LIMIT " . $limit; }
+		$limit = (!$limitCount) ? '' : "LIMIT " . $limitCount;
 		
 		$select = ($type == 'count') ? 'count(useract_id)' : '*';
 		
 		if (!$userid)
 		{
-			$sql = "SELECT " . $select . " FROM " . TABLE_USERACTIVITY . " WHERE useract_archived = %s AND useract_status = %s ORDER BY useract_date DESC " . $limit;
-			$query = $h->db->prepare($sql, 'N', 'show');
+			$sql = "SELECT " . $select . " FROM " . TABLE_USERACTIVITY . " WHERE useract_archived = %s AND useract_status = %s AND useract_id > %d ORDER BY useract_date DESC " . $limit;
+			$query = $h->db->prepare($sql, 'N', 'show', $fromId);
 			if ($type == 'query') { return $query; }
 			$result = ($type == 'count') ? $h->db->get_var($query) : $h->db->get_results($query);
 		} 
 		else
 		{
-			$sql = "SELECT " . $select . " FROM " . TABLE_USERACTIVITY . " WHERE useract_archived = %s AND useract_status = %s AND useract_userid = %d ORDER BY useract_date DESC " . $limit;
-			$query = $h->db->prepare($sql, 'N', 'show', $userid);
+			$sql = "SELECT " . $select . " FROM " . TABLE_USERACTIVITY . " WHERE useract_archived = %s AND useract_status = %s AND useract_userid = %d AND useract_id > %d ORDER BY useract_date DESC " . $limit;
+			$query = $h->db->prepare($sql, 'N', 'show', $userid, $fromId);
 			if ($type == 'query') { return $query; }
 			$result = ($type == 'count') ? $h->db->get_var($query) : $h->db->get_results($query);
 		}

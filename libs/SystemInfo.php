@@ -174,6 +174,7 @@ class SystemInfo
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $ret);
+                //curl_setopt( $ch, CURLOPT_TIMEOUT, 5 );
 		$response = curl_exec($ch);
 		curl_close ($ch);
 		
@@ -190,7 +191,7 @@ class SystemInfo
 	public function getSystemData($h, $level = '')
 	{
 		// essentials:
-		
+            
 		$report['hotaru_site_name'] = SITE_NAME;
 		$report['hotaru_SITEURL'] = SITEURL;
 		
