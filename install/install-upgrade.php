@@ -656,18 +656,50 @@ function do_upgrade($h, $old_version)
 	}
         
         // 1.4.2 to 1.5.0
-	if ($old_version == "1.4.2") {
-            
-                // Add joiont primary key to postvotes table,
-		$exists = $h->db->column_exists(TABLE_POSTVOTES, 'vote_post_id');
-		if ($exists) {
-			$sql = "ALTER TABLE " . TABLE_POSTVOTES . " ADD PRIMARY KEY(vote_user_id, vote_post_id)";
-			$h->db->query($h->db->prepare($sql));
-		}
-                // ALTER TABLE hotaru_postvotes ADD PRIMARY KEY(vote_user_id, vote_post_id);
-                // 
+	if ($old_version == "1.4.2") {                            
+
                 // update "old version" for next set of upgrades
 		$old_version = "1.5.0";
+        }
+        
+        // 1.5.0, 1.5.1, 1.5.2
+	if (version_compare("1.4.2", $old_version) < 1) {                                                    
+                         
+                // Need to cover all of the RCx verson as well
+                // Add a few new settings
+		$exists = $h->db->column_exists('settings', 'settings_id');
+		if ($exists) {
+                    $newSettings = array('FTP_SITE', 'FTP_USERNAME', 'FTP_PASSWORD');
+                    foreach($newSettings as $setting) {                        
+                        $sql = "SELECT settings_name FROM " . TABLE_SETTINGS . " WHERE settings_name = %s";
+                        $result = $h->db->get_var($h->db->prepare($sql, $setting));
+                        
+                        if(!$result) {
+                            $sql = "INSERT INTO " . TABLE_SETTINGS . " (settings_name, settings_value, settings_default, settings_note, settings_show) VALUES(%s, %s, %s, %s, %s)";                        
+                            $h->db->query($h->db->prepare($sql, $setting, ' ', ' ', ' ', 1));
+                        }
+                        
+                    }						
+		}
+                
+                // drop joint primary key to postvotes table if exists
+                // should not be there
+                $sql = "SHOW INDEX FROM " . TABLE_POSTVOTES . " WHERE KEY_NAME = %s";
+		$result = $h->db->query($h->db->prepare($sql, 'PRIMARY'));
+                if ($result) {                   
+			$sql = "ALTER TABLE " . TABLE_POSTVOTES . " DROP PRIMARY KEY";
+			$h->db->query($h->db->prepare($sql));
+		}                
+                
+                // update "old version" for next set of upgrades
+		$old_version = "1.5.2";
+        }
+        
+        if ($old_version == "1.5.2") {
+            
+            
+                // update "old version" for next set of upgrades
+		//$old_version = "1.5.2";
         }
 
         

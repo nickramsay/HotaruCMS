@@ -79,16 +79,15 @@ $h->vars['theme_settings']['userProfile_tabs'] = isset($h->vars['theme_settings'
                 </ul>
                 <ul class="nav nav-pills pull-right">
                
-                    <?php
+                    <?php                    
                     if (!$h->isActive('signin')) { 
 		
 			if ($h->currentUser->loggedIn == true) { 
 				
-                                if ($h->currentUser->getPermission('can_access_admin') == 'yes') {
+                                if ($h->currentUser->getPermission('can_access_admin') == 'yes') {                                    
+                                    if ($h->isDebug) { print $h->debugNav(); }
                                     $h->adminNav();
-                                } else {
-                                    echo "<li><a href='" . $h->url(array(), 'admin') . "'>" . $h->lang("main_theme_navigation_admin") . "</a></li>";
-                                }
+                                } 
                                 
 				//if ($h->pageName == 'logout') { $status = "class='active'"; } else { $status = ""; }
 				// Logout

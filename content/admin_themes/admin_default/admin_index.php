@@ -47,13 +47,6 @@ if (!$result) {
         <div class='breadcrumb'>
                 <?php echo $h->breadcrumbs("/"); ?>
         </div>
-        
-        <?php if ($h->pageName == 'plugin_settings') { ?>
-            <div id="admin_topright" class="floatright pull-right">
-                    <?php echo $h->pluginHook('admin_topright'); ?>                
-            </div>
-        <?php } ?>  
-        
     </div>
 </div>
 
@@ -87,9 +80,7 @@ if (!$result) {
                             }
                     } else {
                             if ($h->pageName == 'plugin_settings') {  
-                                // TODO
-                                // Put in the tab navs for all plugins here
-                                // then separate by hooks
+                                
                             } 
                             
                             $h->template($h->pageName);

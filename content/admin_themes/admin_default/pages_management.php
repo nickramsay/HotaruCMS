@@ -1,7 +1,7 @@
 <?php 
 /**
- * Theme name: admin_classic
- * Template name: footer.php
+ * Theme name: admin_default
+ * Template name: plugins.php
  * Template author: Nick Ramsay
  *
  * PHP version 5
@@ -26,22 +26,18 @@
  * @link      http://www.hotarucms.org/
  */
 
+$h->template('admin_sidebar');
+
+$h->showMessages();
+
+$h->pluginHook('pages_management_top');
+
+// Build tabs and content pages
+$tabs = array(
+    'Pages',   
+    'Help'
+ );
+
+buildTabs($h, 'pages_management', $tabs);
+
 ?>
-	<div id="ft" role="contentinfo">
-		<?php
-			$h->pluginHook('admin_footer');
-			
-			// Link to forums...
-			echo "<p>" . $h->lang("admin_theme_footer_having_trouble_vist_forums") . "</p>";
-			
-			if ($h->isDebug) {
-				$h->showQueriesAndTime();
-			}
-		?>
-	</div>
-</div>
-
-<?php $h->pluginHook('pre_close_body'); ?>
-
-</body>
-</html>

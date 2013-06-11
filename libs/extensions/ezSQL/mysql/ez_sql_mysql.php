@@ -58,6 +58,7 @@
                 function setHotaru($h)
                 {
                     $this->h = $h;
+                    $h->vars['debug']['db_driver'] = 'mysql';
                 }
 
 		/**********************************************************************
@@ -359,62 +360,54 @@
 		{
 			@mysql_close($this->dbh);	
 		}
-
+ 
                 
-                /**
-                * Check if table exists
+               
+         /**********************************************************************
+                * Prepares a SQL query for safe use, using sprintf() syntax.
+                * 
+                * Added for Hotaru
                 *
-                * @param string $table2check
-                * @return bool
+                * @link http://php.net/sprintf See for syntax to use for query string.
+                * @since 2.3.0
                 *
-                * Notes: This is a custom function for Hotaru CMS
+                * @param null|string $args If string, first parameter must be query statement
+                * @param mixed $args, If additional parameters, they will be set inserted into the query.
+                * @return null|string Sanitized query string
                 */
-
-               function table_exists($table2check) {
-                   $tables = $this->get_col("SHOW TABLES",0);
-                   if (in_array(DB_PREFIX . $table2check, $tables)) { return true; }
-
-                   return false;
-               }
-
-               /**
-                * Check if table empty
-                *
-                * @param string $table2check
-                * @return bool
-                *
-                * Notes: This is a custom function for Hotaru CMS
-                */
-               function table_empty($table2check) {
-                   $rowcount = $this->get_var($this->prepare("SELECT COUNT(*) FROM " . DB_PREFIX . $table2check));
-                   if($rowcount && $rowcount > 0) {
-                       return false; // table not empty
-                   } else {
-                       return true; // table is empty
-                   }
-               }
-
-               /**
-                * Check if table column exists
-                *
-                * @param string $table2check
-                * @param string $column
-                * @return bool
-                *
-                * Notes: This is a custom function for Hotaru CMS
-                */
-               function column_exists($table2check, $column)
+               function escape_by_ref(&$s) 
                {
-                   $sql = "SHOW COLUMNS FROM " . DB_PREFIX . $table2check;
-                   foreach ($this->get_col($sql,0) as $column_name)
+                   $s = $this->escape($s);
+               }
+
+               function prepare($args=null) 
+               {
+
+                   if (is_null( $args ))
+                       return;
+
+                   $args = func_get_args();
+
+                   // This is a Hotaru hack, enabling args to be built on the fly.
+                   if(is_array($args[0]))
                    {
-                       if ($column_name == $column) {
-                           return true;
-                       } 
+                       // See Submit plugin: class.post.php get_posts() for an example.
+                       $args = $args[0];
                    }
 
-                   return false;
+                   $query = array_shift($args);
+
+                   // in case someone mistakenly already singlequoted it
+                   $query = str_replace("'%s'", '%s', $query); 
+
+                   $query = str_replace('"%s"', '%s', $query); // doublequote unquoting
+
+                   $query = str_replace('%s', "'%s'", $query); // quote the strings
+
+                   array_walk($args, array(&$this, 'escape_by_ref'));
+
+                   return @vsprintf($query, $args);
                }
-        
+               
 	}
 ?>

@@ -201,6 +201,9 @@ $lang["admin_theme_maintenance_empty_explanation"] = "Emptying tables will remov
 $lang["admin_theme_maintenance_no_db_tables_to_empty"] = "No database tables to empty.";
 $lang["admin_theme_maintenance_no_plugin_settings_to_delete"] = "No plugin settings to delete.";
 
+/* Pages */
+$lang["admin_theme_pages"] = "Pages";
+
 /* Blocked List */
 $lang['admin_blocked_list_empty'] = "No value entered";
 $lang['admin_blocked_list_added'] = "New item added";
@@ -244,6 +247,7 @@ $lang["admin_theme_menu_logout"] = "Logout";
 /* navigation */
 $lang["admin_theme_navigation_home"] = "Home";
 $lang["admin_theme_navigation_admin"] = "Admin";
+$lang["main_theme_navigation_debug"] = "Debug";
 $lang["admin_theme_navigation_login"] = "Login";
 $lang["admin_theme_navigation_logout"] = "Logout";
 
